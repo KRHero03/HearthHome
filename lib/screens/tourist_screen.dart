@@ -33,7 +33,7 @@ class TouristInputState extends State<TouristInput> {
   File govIDFile;
   String govIDURL = 'NA';
   var _gender = ['Male', 'Female'];
-  var _selectedGender;
+  var _selectedGender=0;
   var _country;
 
   var _isloading = false;
@@ -135,6 +135,22 @@ class TouristInputState extends State<TouristInput> {
         child: Column(
           children: <Widget>[
             DelayedAnimation(
+                child: Wrap(children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Please enter your details...',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Standard',
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ]),
+                delay: 300),
+            DelayedAnimation(
               delay: 300,
               child: Padding(
                 padding: EdgeInsets.only(top: 10, left: 5, right: 5),
@@ -161,22 +177,81 @@ class TouristInputState extends State<TouristInput> {
             SizedBox(
               height: 10,
             ),
-            Padding(padding: EdgeInsets.only(top: 10,left: 5 ,right: 5),
-            child: CountryPicker(
-              dense: false,
-              showFlag: true,
-              showDialingCode: true,
-              showName: true,
-              showCurrency: false,
-              showCurrencyISO: false,
-              onChanged: (Country country) {
-                setState(() {
-                  _country = country;
-                });
-              },
-              selectedCountry: _country,
-            ),),
+             DelayedAnimation(
+              delay: 300,
+              child: Row(
+                children: <Widget>[
+                  new Radio(
+                    value: 0,
+                    groupValue: _selectedGender,
+                    onChanged: (i) {
+                      setState(() {
+                        _selectedGender = i;
+                      });
+                    },
+                  ),
+                  new Text(
+                    'Male',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'Standard',
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  new Radio(
+                    value: 1,
+                    groupValue: _selectedGender,
+                    onChanged: (i) {
+                      setState(() {
+                        _selectedGender = i;
+                      });
+                    },
+                  ),
+                  new Text(
+                    'Female',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'Standard',
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             
+            DelayedAnimation(
+                child: Wrap(children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Contact',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Standard',
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ]),
+                delay: 300),
+            Padding(
+              padding: EdgeInsets.only(top: 10, left: 5, right: 5),
+              child: CountryPicker(
+                dense: false,
+                showFlag: true,
+                showDialingCode: true,
+                showName: true,
+                showCurrency: false,
+                showCurrencyISO: false,
+                onChanged: (Country country) {
+                  setState(() {
+                    _country = country;
+                  });
+                },
+                selectedCountry: _country,
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -205,46 +280,23 @@ class TouristInputState extends State<TouristInput> {
                 ),
               ),
             ),
+           
             DelayedAnimation(
-              delay: 300,
-              child: Row(
-                children: <Widget>[
-                  new Radio(
-                    value: 0,
-                    groupValue: _selectedGender,
-                    onChanged: (i) {
-                      setState(() {
-                        _selectedGender = i;
-                      });
-                    },
+                child: Wrap(children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Identification',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Standard',
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  new Text(
-                    'Male', style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Standard',
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  ),
-                  new Radio(
-                    value: 1,
-                    groupValue: _selectedGender,
-                    onChanged: (i) {
-                      setState(() {
-                        _selectedGender = i;
-                      });
-                    },
-                  ),
-                  new Text(
-                    'Female',
-                    style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Standard',
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  ),
-                ],
-              ),
-            ),
+                ]),
+                delay: 300),
             DelayedAnimation(
               delay: 300,
               child: Padding(
@@ -296,13 +348,18 @@ class TouristInputState extends State<TouristInput> {
             ),
             DelayedAnimation(
               child: Padding(
-                padding: EdgeInsets.only(top: 10, left: 5, right: 5),
-                child: FloatingActionButton(
-                  onPressed: _pickImage,
-                  tooltip: 'Pick Image',
-                  child: Icon(Icons.add_a_photo),
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 10, left: 5, right: 5),
+                  child: FlatButton(
+                      onPressed: _pickImage,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: new BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).accentColor,
+                        ),
+                        child: Icon(MdiIcons.camera,
+                            color: Color(0xfff3f5ff), size: 34),
+                      ))),
             ),
             SizedBox(
               height: 10,
