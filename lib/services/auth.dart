@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -15,24 +14,35 @@ class AuthService {
 
   //When Authentication is Done, Stream is used to notify wrapper.
   Stream<FirebaseUser> get user {
-    
     return _auth.onAuthStateChanged.map(
         _getUser); //Maps FirebaseUser Instance to custom User instance using _getUser function.
     //It is the same process as Pipelining. The Auth instance provides a FirebaseUser Object
     //that is passed into _getUser which returns User object.
   }
 
-
-  Future<FirebaseUser> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      FirebaseUser user = result.user;
-      return user;
-    } catch (error) {
-      print(error.toString());
+  Future<FirebaseUser> signInWithEmailAndPassword(
+      String email, String password) async {
+    await _auth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .catchError((onError) {
       return null;
-    }
+    }).then((result) {
+      final FirebaseUser user = result.user;
+
+      return user;
+    });
+  }
+
+  Future<FirebaseUser> createUser(String email, String password) async {
+    await _auth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .catchError((onError) {
+      return null;
+    }).then((result) {
+      final FirebaseUser user = result.user;
+
+      return user;
+    });
   }
 
   /*Future<FirebaseUser> signInWithGoogle() async {
