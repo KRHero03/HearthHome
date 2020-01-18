@@ -19,20 +19,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   provider: ^4.0.1
-  shared_prefernces: ^0.5.3+5
+
+  shared_preferences: ^0.5.3+5
+
   http: ^0.12.0+3
 
   
+  google_map_location_picker: ^3.1.0
+
+  flutter_advanced_networkimage: any
+
   true_time: ^0.1.0
   
-  flutter_advanced_networkimage: 0.5.0
 
   url_launcher: 5.2.5
 
   device_id: ^0.2.0
 
-  image_picker_modern: ^0.4.12
   image_cropper: ^1.0.1
 
   
@@ -49,6 +54,7 @@ dev_dependencies:
     sdk: flutter
 
 
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -60,6 +66,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/icon/icon_round.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
