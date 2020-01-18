@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hearthhome/screens/provider_info.dart';
 import 'package:hearthhome/screens/tourist_screen.dart';
-import 'package:hearthhome/widgets/delayed_animation.dart';
 
 class SplitScreen extends StatelessWidget {
   static const routeName = 'split';
