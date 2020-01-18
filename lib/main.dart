@@ -5,11 +5,12 @@ import './screens/splash_screen.dart';
 import './provider/auth.dart';
 import './screens/split_screen.dart';
 import 'screens/home.dart';
+import './agora/main.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  /*Widget build(BuildContext context) {
+/*Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
