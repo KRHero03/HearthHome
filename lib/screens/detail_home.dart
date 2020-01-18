@@ -1,12 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import '../provider/auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/home.dart';
 import 'home.dart';
+import '../agora/src/pages/index.dart';
 
 class HomeDetailScreen extends StatefulWidget {
   final HomeData data1;
@@ -18,12 +23,14 @@ class HomeDetailScreen extends StatefulWidget {
 }
 
 class HomeDetailsScreenState extends State<HomeDetailScreen> {
+  var _isloaded = false;
   final HomeData data;
   bool isLoadingMap = false;
   HomeDetailsScreenState({this.data});
   static String routeName = '/product-detail';
   @override
   Widget build(BuildContext context) {
+    var _auth = Provider.of<Auth>(context);
     _openMap() async {
       setState(() {
         isLoadingMap = true;
@@ -49,7 +56,6 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
       }
     }
 
-    _loadChat() {}
     return Scaffold(
       appBar: AppBar(
         title: Wrap(
@@ -260,9 +266,9 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
             DelayedAnimation(
               delay: 300,
               child: Padding(
-                padding: EdgeInsets.only(top: 20,left:15,right:15),
+                padding: EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: MaterialButton(
-                  onPressed: _loadChat,
+                  onPressed: () {},
                   child: SingleChildScrollView(
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -290,31 +296,71 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
             DelayedAnimation(
               delay: 300,
               child: Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 10,left:15,right:15),
-                child: MaterialButton(
-                  onPressed: _loadChat,
-                  child: SingleChildScrollView(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                        Icon(MdiIcons.video, color: Color(0xfff3f5ff)),
-                        Text(
-                          'VIDEO CALL',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'Standard',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ])),
-                  color: Theme.of(context).accentColor,
-                  elevation: 0,
-                  minWidth: 400,
-                  height: 50,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
+                padding:
+                    EdgeInsets.only(top: 20, bottom: 10, left: 15, right: 15),
+                child: _isloaded
+                    ? CircularProgressIndicator()
+                    : MaterialButton(
+                        onPressed: () async {
+                          setState(() {
+                            _isloaded = true;
+                          });
+                          FirebaseDatabase db = FirebaseDatabase.instance;
+                          DatabaseReference dbRef = db
+                              .reference()
+                              .child('Notifications')
+                              .child(data.key)
+                              .child(_auth.userId);
+                          dbRef.set({
+                            'ChannelID': (_auth.userId + data.key).toString(),
+                            'Status': 1,
+                            'Timestamp': ServerValue.timestamp
+                          }).then((res) async {
+                            print('send notif');
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CallPage(
+                                  channelName: _auth.userId + data.key,
+                                ),
+                              ),
+                            );
+                            dbRef.set({
+                              'ChannelID': (_auth.userId + data.key).toString(),
+                              'Status': 0,
+                              'Timestamp': ServerValue.timestamp
+                            }).then((onValue) {
+                              print('call end');
+                              setState(() {
+                                _isloaded = false;
+                              });
+                            });
+                          }).catchError((onError) {
+                            print(onError);
+                          });
+                        },
+                        child: SingleChildScrollView(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                              Icon(MdiIcons.video, color: Color(0xfff3f5ff)),
+                              Text(
+                                'VIDEO CALL',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: 'Standard',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ])),
+                        color: Theme.of(context).accentColor,
+                        elevation: 0,
+                        minWidth: 400,
+                        height: 50,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
               ),
             ),
           ],
