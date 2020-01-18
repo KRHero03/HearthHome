@@ -144,7 +144,7 @@ class HomeWidget extends StatelessWidget {
         child: GestureDetector(
           child: Image.network(data.images, fit: BoxFit.cover),
           onTap: () {
-            Navigator.pushReplacement(
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => HomeDetailScreen(data)));
