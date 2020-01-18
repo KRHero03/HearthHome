@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hearthhome/screens/provider_info.dart';
+import 'package:hearthhome/screens/tourist_screen.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
-
 
 class SplitScreen extends StatelessWidget {
   static const routeName = 'split';
@@ -28,7 +28,9 @@ class SplitScreen extends StatelessWidget {
                   child: FlatButton(
                     color: Colors.blue,
                     child: Text('Host'),
-                    onPressed: (){Navigator.pushNamed(context, ProviderInfo.routeName);},
+                    onPressed: () {
+                      Navigator.pushNamed(context, ProviderInfo.routeName);
+                    },
                   ),
                   delay: 300,
                 ),
@@ -45,7 +47,9 @@ class SplitScreen extends StatelessWidget {
                   child: FlatButton(
                     color: Colors.blue,
                     child: Text('Tourist'),
-                    onPressed: (){},
+                    onPressed: () {
+                      Navigator.pushNamed(context, TouristInput.routeName);
+                    },
                   ),
                   delay: 300,
                 ),

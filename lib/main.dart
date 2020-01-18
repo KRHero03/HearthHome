@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hearthhome/screens/provider_info.dart';
 import 'package:hearthhome/screens/split_screen.dart';
+import 'package:hearthhome/screens/tourist_screen.dart';
 import 'screens/auth-screen.dart';
 import 'package:provider/provider.dart';
 import './provider/auth.dart';
@@ -47,7 +48,8 @@ class MyApp extends StatelessWidget {
                           ),
                     routes: {
                       SplitScreen.routeName: (ctx) => SplashScreen(),
-                      ProviderInfo.routeName: (ctx) => ProviderInfo()
+                      ProviderInfo.routeName: (ctx) => ProviderInfo(),
+                      TouristInput.routeName: (ctx) => TouristInput(),
                     },
                   ))),
     );

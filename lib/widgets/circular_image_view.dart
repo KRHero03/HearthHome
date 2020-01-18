@@ -21,10 +21,9 @@ class CircularImageView extends StatelessWidget {
               ? AssetImage(imageLink.toString())
               : (imgSrc == ImageSourceENUM.Network
                   ? AdvancedNetworkImage(imageLink,
-                          useDiskCache: true,
-                          cacheRule:
-                              CacheRule(maxAge: const Duration(days: 30)))
-                      : FileImage(imageLink)),
+                      useDiskCache: true,
+                      cacheRule: CacheRule(maxAge: const Duration(days: 30)))
+                  : FileImage(imageLink)),
         ),
         shape: BoxShape.circle,
       ),

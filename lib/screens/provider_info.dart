@@ -35,28 +35,30 @@ class ProviderInfoState extends State<ProviderInfo> {
           iconTheme: IconThemeData(color: Color(0xff2893ff)),
           backgroundColor: Color(0xfff3f5ff),
           elevation: 1.0,
-          title: new Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              CircularImageView(
-                w: 50,
-                h: 50,
-                imageLink: 'assets/icon/icon_round.png',
-                imgSrc: ImageSourceENUM.Asset,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 5),
-                child: Text(
-                  'HearthHome - Set Up',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Standard',
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  textAlign: TextAlign.center,
+          title: FittedBox(
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CircularImageView(
+                  w: 50,
+                  h: 50,
+                  imageLink: 'assets/icon/icon_round.png',
+                  imgSrc: ImageSourceENUM.Asset,
                 ),
-              )
-            ],
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Text(
+                    'HearthHome - Set Up',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'Standard',
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         body: SingleChildScrollView(
