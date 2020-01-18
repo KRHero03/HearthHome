@@ -1,0 +1,3 @@
+Primary:- 2893ff
+Secondary:- f3faff
+Accent:- 29ffd6
