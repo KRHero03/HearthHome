@@ -9,6 +9,7 @@ import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/models/keys.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/home.dart';
+import 'package:hearthhome/services/name_validator.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
@@ -95,77 +96,114 @@ class ProviderInfoState extends State<ProviderInfo> {
     }
 
     _submitDetails() async {
-      print('1');
-      setState(() {
-        submitting = true;
-      });
-      name = _nameController.text;
-      address = _addressController.text;
-      countryName = _country.name;
-      phone = _country.dialingCode + _phoneController.text;
-      pincode = _pinCodeController.text;
-      govID = _govCode.text;
-      adultMale = _adultMaleController.text;
-      adultFemale = _adultFemaleController.text;
-      childrenMale = _childrenMaleController.text;
-      childrenFemale = _childrenFemaleController.text;
-      StorageReference govIDRef =
-          FirebaseStorage.instance.ref().child('Host').child('GovIDFile');
-      StorageUploadTask uploadTask = govIDRef.putFile(govIDFile);
-      uploadTask.onComplete.((snapshot) {
-        govIDRef.getDownloadURL().then((onValue) {
+       name = _nameController.text;
+          address = _addressController.text;
+          countryName = _country.name;
+          phone = _country.dialingCode + _phoneController.text;
+          pincode = _pinCodeController.text;
+          govID = _govCode.text;
+          adultMale = _adultMaleController.text;
+          adultFemale = _adultFemaleController.text;
+          childrenMale = _childrenMaleController.text;
+          childrenFemale = _childrenFemaleController.text;
+      if (NameValidator.validate(name) &&
+          phone.length == 12 &&
+          address.isNotEmpty &&
+          govID.isNotEmpty &&
+          govIDFile != null &&
+          houseImageFile.length != 0 &&
+          pincode.length == 6 &&
+          latitude != null &&
+          longitude != null &&
+          adultFemale != null &&
+          adultMale != null &&
+          childrenMale != null &&
+          childrenFemale != null) {
+        if (int.parse(adultMale) <= 5 &&
+            int.parse(adultFemale) <= 5 &&
+            int.parse(childrenMale) <= 5 &&
+            int.parse(childrenFemale) <= 5) {
+          setState(() {
+            submitting = true;
+          });
+         
+          StorageReference govIDRef = FirebaseStorage.instance
+              .ref()
+              .child('Host')
+              .child(_auth.userId)
+              .child('GovID');
+          StorageUploadTask uploadTask = govIDRef.putFile(govIDFile);
+          StorageTaskSnapshot snapshot = await uploadTask.onComplete;
+          govIDURL = await snapshot.ref.getDownloadURL();
+
           List<String> houseImageURL = List<String>();
           var i = 0;
           houseImageFile.forEach((f) async {
-            StorageReference houseImageRef = FirebaseStorage.instance
+            print('Before:-' + i.toString());
+            StorageReference ref = FirebaseStorage.instance
                 .ref()
                 .child('Host')
+                .child(_auth.userId)
                 .child('HouseImages')
                 .child(i.toString());
-            StorageUploadTask uploadTask = houseImageRef.putFile(f);
-            uploadTask.onComplete.whenComplete(() {
-              houseImageRef.getDownloadURL().then((val) {
-                houseImageURL.add(val);
+            i++;
+            StorageUploadTask uploadTask = ref.putFile(f);
+            StorageTaskSnapshot snapshot = await uploadTask.onComplete;
+            houseImageURL.add(await snapshot.ref.getDownloadURL());
+            print('After:-' + i.toString());
+            if (i == houseImageFile.length) {
+              print('done');
+              dbRef.set({
+                'Name': name,
+                'HouseImages': houseImageURL.join(','),
+                'Address': {
+                  'Value': address,
+                  'Latitude': latitude.toString(),
+                  'Longitude': longitude.toString(),
+                  'Pincode': pincode
+                },
+                'Phone': phone,
+                'Household': {
+                  'AdultMale': adultMale,
+                  'AdultFemale': adultFemale,
+                  'ChildrenMale': childrenMale,
+                  'ChildrenFemale': childrenFemale
+                },
+                'GovID': govID,
+                'GovIDURL': govIDURL
+              }).then((onValue) {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Home()));
+                setState(() {
+                  submitting = false;
+                });
+              }).catchError((onError) {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => CustomAlertDialog(
+                          title: 'HearthHome Details',
+                          message:
+                              'Oops...HearthHome failed to save your details!\nPlease try again later...',
+                        ));
               });
-            });
-            print('2');
+            }
           });
-          print(houseImageURL.length);
-          dbRef.set({
-            'Name': name,
-            'HouseImages': houseImageURL.join(','),
-            'Address': {
-              'Value': address,
-              'Latitude': latitude.toString(),
-              'Longitude': longitude.toString(),
-              'Pincode': pincode
-            },
-            'Phone': phone,
-            'Household': {
-              'AdultMale': adultMale,
-              'AdultFemale': adultFemale,
-              'ChildrenMale': childrenMale,
-              'ChildrenFemale': childrenFemale
-            },
-            'GovID': govID,
-            'GovIDURL': onValue
-          }).then((onValue) {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => Home()));
-            setState(() {
-              submitting = false;
-            });
-          }).catchError((onError) {
-            showDialog(
-                context: context,
-                builder: (ctx) => CustomAlertDialog(
-                      title: 'HearthHome Details',
-                      message:
-                          'Oops...HearthHome failed to save your details!\nPlease try again later...',
-                    ));
-          });
-        });
-      });
+        } else {
+          showDialog(
+              context: context,
+              builder: (ctx) => CustomAlertDialog(
+                    title: 'HearthHome Details',
+                    message: 'Please enter valid Household details!',
+                  ));
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (ctx) => CustomAlertDialog(
+                  title: 'HearthHome Details',
+                  message: 'Please enter valid details!',
+                ));
+      }
     }
 
     return Scaffold(

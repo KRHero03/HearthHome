@@ -1,12 +1,12 @@
-/*import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hearthhome/provider/auth.dart';
+import 'package:hearthhome/screens/auth_screen.dart';
 import 'package:hearthhome/screens/splash_screen.dart';
 import 'package:hearthhome/screens/split_screen.dart';
 import 'package:provider/provider.dart';
-
-import 'authenticate/authenticate.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'home.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -16,57 +16,65 @@ class Wrapper extends StatefulWidget {
 }
 
 class WrapperState extends State<Wrapper> {
-  bool exists;
+  int exists = 0;
   bool reloaded = false;
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of<FirebaseUser>(context);
-    if (reloaded == false) {
-      if (user != null) user.reload();
-      reloaded = true;
-    }
-    if (user == null)
-      return Authenticate();
-    else {
-      if (user.isEmailVerified) {
-        if (exists == null) {
+    Auth _auth = Provider.of<Auth>(context);
+    if (_auth.isAuth) {
+      if (exists == null) {
+        FirebaseDatabase.instance
+            .reference()
+            .child('Users')
+            .child(_auth.userId)
+            .once()
+            .then((DataSnapshot snapshot) {
+          if (snapshot.value != null) {
+            setState(() {
+              exists = 3;
+            });
+          } else {
+            setState(() {
+              exists = 2;
+            });
+          }
+        });
+      }
+    } else {
+      _auth.tryAutoLogin().then((onValue) {        
+        if (onValue == true) {
           FirebaseDatabase.instance
               .reference()
               .child('Users')
-              .child(user.uid)
+              .child(_auth.userId)
               .once()
               .then((DataSnapshot snapshot) {
             if (snapshot.value != null) {
               setState(() {
-                exists = true;
+                exists = 3;
               });
             } else {
-              exists = false;
+              setState(() {
+                exists = 2;
+              });
             }
           });
-        }
-        if (exists == null) {
-          return SplashScreen();
         } else {
-          if (exists == true) {
-            return Container(
-              child: Text('Hello'),
-            );
-          } else {
-            return SplitScreen();
-          }
+          setState(() {
+            exists = 1;
+          });
         }
-      } else {
-        Fluttertoast.showToast(
-            msg: "Please verify your Email Address!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 2,
-            backgroundColor: Color(0xfff3f5ff),
-            textColor: Theme.of(context).primaryColor,
-            fontSize: 16.0);
-        return Authenticate();
-      }
+      });
+    }
+
+    if (exists == 0) {
+      return SplashScreen();
+    } else if (exists == 1) {
+      return AuthScreen();
+    } else if (exists == 2) {
+      return SplitScreen();
+    } else {
+      return Home();
     }
   }
-}*/
+}

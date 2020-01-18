@@ -1,21 +1,77 @@
-
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:hearthhome/models/enum.dart';
-import 'package:hearthhome/widgets/circular_image_view.dart';
+import 'package:provider/provider.dart';
+import '../provider/auth.dart';
 
-class Home extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() {
-    return HomeState();
-  }
-  
+import '../models/enum.dart';
+import '../widgets/circular_image_view.dart';
+
+class HomeData {
+  bool submitting = false;
+
+  double latitude, longitude;
+  String name,
+      address,
+      countryName,
+      phone,
+      pincode,
+      govID,
+      govIDURL,
+      adultMale,
+      adultFemale,
+      childrenMale,
+      childrenFemale;
+
+  HomeData(
+      {this.name,
+      this.address,
+      this.phone,
+      this.pincode,
+      this.govIDURL,
+      this.adultMale,
+      this.adultFemale,
+      this.childrenMale,
+      this.childrenFemale});
 }
 
-class HomeState extends State<Home>{
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List<HomeData> data = [];
+  var _isloading = true;
+
+  FirebaseDatabase db = FirebaseDatabase.instance;
+  void initState() {
+    db.reference().child('Users').child('Host').once().then((snap) {
+      print(snap.value);
+      //   snap.value.map((key, value) {
+
+      // data.add(HomeData(
+      //   name: value['Name'],
+      //   address: value['Address']['Value'],
+      //   childrenFemale: value['Household']['ChildrenFemale'],
+      //   childrenMale: value['Household']['ChildrenMale'],
+      //   adultFemale: value['Household']['AdultFemale'],
+      //   adultMale: value['Household']['AdultMale'],
+      //)
+      //);
+      //     });
+      setState(() {
+        _isloading = false;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold( appBar: AppBar(
+    if (!_isloading) print(data);
+    return Scaffold(
+        appBar: AppBar(
           iconTheme: IconThemeData(color: Color(0xff2893ff)),
           backgroundColor: Color(0xfff3f5ff),
           elevation: 1.0,
@@ -44,7 +100,28 @@ class HomeState extends State<Home>{
               ])
             ],
           ),
-        ),body:Text('Hello'));
+        ),
+        body: WillPopScope(
+          onWillPop: () async {
+            Future.value(
+                false); //return a `Future` with false value so this route cant be popped or closed.
+          },
+          child: _isloading
+              ? Center(child: CircularProgressIndicator())
+              : FlatButton(
+                  child: Text('logout'),
+                  onPressed: () {
+                    Provider.of<Auth>(context, listen: false).logOut();
+                  },
+                ),
+          // : ListView.builder(
+          //     itemCount: data.length,
+          //     itemBuilder: (ctx, i) {
+          //       return Container(
+
+          //       );
+          //     },
+          //   ),
+        ));
   }
-  
 }
