@@ -16,7 +16,16 @@ class ProviderInfo extends StatefulWidget {
   }
 }
 
+
+
 class ProviderInfoState extends State<ProviderInfo> {
+
+  @override
+  void dispose(){
+    
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     LocationResult result;
@@ -35,16 +44,17 @@ class ProviderInfoState extends State<ProviderInfo> {
           iconTheme: IconThemeData(color: Color(0xff2893ff)),
           backgroundColor: Color(0xfff3f5ff),
           elevation: 1.0,
-          title: FittedBox(
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                CircularImageView(
-                  w: 50,
-                  h: 50,
-                  imageLink: 'assets/icon/icon_round.png',
-                  imgSrc: ImageSourceENUM.Asset,
-                ),
+
+          title: new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              CircularImageView(
+                w: 50,
+                h: 50,
+                imageLink: 'assets/icon/icon_round.png',
+                imgSrc: ImageSourceENUM.Asset,
+              ),
+              Wrap(children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(left: 5),
                   child: Text(
@@ -56,9 +66,9 @@ class ProviderInfoState extends State<ProviderInfo> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                )
-              ],
-            ),
+                ),
+              ])
+            ],
           ),
         ),
         body: SingleChildScrollView(
@@ -101,19 +111,19 @@ class ProviderInfoState extends State<ProviderInfo> {
                             controller: null,
                             keyboardType: TextInputType.multiline,
                             style: TextStyle(
-                                color: Color(0xff4564e5),
+                                color: Theme.of(context).primaryColor,
                                 fontFamily: 'Standard'),
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Address',
                                 prefixIcon: Icon(
                                   MdiIcons.map,
-                                  color: Color(0xff4564e5),
+                                  color: Theme.of(context).primaryColor,
                                 ),
                                 labelStyle: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'Standard',
-                                  color: Color(0xff4564e5),
+                                  color: Theme.of(context).primaryColor,
                                 )),
                           ),
                         ),
@@ -123,7 +133,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                               padding: EdgeInsets.all(5),
                               decoration: new BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Color(0xff4edbf2),
+                                color: Theme.of(context).accentColor,
                               ),
                               child: Icon(MdiIcons.mapMarker,
                                   color: Color(0xfff3f5ff), size: 34),

@@ -109,11 +109,12 @@ class TouristInputState extends State<TouristInput> {
             ),
             CountryPicker(
               dense: false,
-              showFlag: true, //displays flag, true by default
-              showDialingCode: false, //displays dialing code, false by default
-              showName: true, //displays country name, true by default
-              showCurrency: false, //eg. 'British pound'
-              showCurrencyISO: true, //eg. 'GBP'
+              showFlag: true, 
+              showDialingCode: true, 
+              showName: true, 
+              showCurrency: false, 
+              showCurrencyISO: false, 
+
               onChanged: (Country country) {
                 setState(() {
                   _country = country;

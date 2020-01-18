@@ -22,14 +22,17 @@ class SplitScreen extends StatelessWidget {
               child: ButtonTheme(
                 minWidth: 120.0,
                 height: 70.0,
-                buttonColor: Colors.blue,
+                buttonColor: Theme.of(context).accentColor,
                 padding: EdgeInsets.all(10),
                 child: DelayedAnimation(
                   child: FlatButton(
-                    color: Colors.blue,
+                    color: Theme.of(context).primaryColor,
                     child: Text('Host'),
                     onPressed: () {
-                      Navigator.pushNamed(context, ProviderInfo.routeName);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProviderInfo()));
                     },
                   ),
                   delay: 300,
@@ -41,14 +44,18 @@ class SplitScreen extends StatelessWidget {
               child: ButtonTheme(
                 minWidth: 120.0,
                 height: 70.0,
-                buttonColor: Colors.blue,
+                buttonColor: Theme.of(context).accentColor,
                 padding: EdgeInsets.all(10),
                 child: DelayedAnimation(
                   child: FlatButton(
-                    color: Colors.blue,
+                    color: Theme.of(context).primaryColor,
                     child: Text('Tourist'),
                     onPressed: () {
-                      Navigator.pushNamed(context, TouristInput.routeName);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TouristInput()));
+
                     },
                   ),
                   delay: 300,

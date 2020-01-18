@@ -39,7 +39,7 @@ class _DelayedAnimationState extends State<DelayedAnimation>
   }
 
   @override
-  void dispose() {
+  void dispose() {    
     _controller.dispose();
     super.dispose();
   }

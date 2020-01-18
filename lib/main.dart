@@ -1,57 +1,64 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hearthhome/screens/provider_info.dart';
-import 'package:hearthhome/screens/split_screen.dart';
-import 'package:hearthhome/screens/tourist_screen.dart';
-import 'screens/auth-screen.dart';
+import 'package:flutter/services.dart';
+import 'package:hearthhome/screens/splash_screen.dart';
+import 'package:hearthhome/screens/wrapper.dart';
+import 'package:hearthhome/services/auth.dart';
 import 'package:provider/provider.dart';
-import './provider/auth.dart';
-import './screens/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
-        )
-      ],
-      child: MaterialApp(
-          title: 'HearthHome',
-          theme: ThemeData(
-              // This is the theme of your application.
-              //
-              // Try running your application with "flutter run". You'll see the
-              // application has a blue toolbar. Then, without quitting the app, try
-              // changing the primarySwatch below to Colors.green and then invoke
-              // "hot reload" (press "r" in the console where you ran "flutter run",
-              // or simply save your changes to "hot reload" in a Flutter IDE).
-              // Notice that the counter didn't reset back to zero; the application
-              // is not restarted.
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    return StreamProvider<FirebaseUser>.value(
+        value: AuthService().user,
+        child: MaterialApp(
+            theme: ThemeData(
               primaryColor: Color(0xff2893ff),
-              accentColor: Color(0xff29ffd6)),
-          home: Consumer<Auth>(
-              builder: (ctx, auth, _) => MaterialApp(
-                    title: 'Hello',
-                    home: auth.isAuth
-                        ? SplitScreen()
-                        : FutureBuilder(
-                            future: auth.tryAutoLogin(),
-                            builder: (ctx, authResult) =>
-                                authResult.connectionState ==
-                                        ConnectionState.waiting
-                                    ? SplashScreen()
-                                    : AuthScreen(),
-                          ),
-                    routes: {
-                      SplitScreen.routeName: (ctx) => SplashScreen(),
-                      ProviderInfo.routeName: (ctx) => ProviderInfo(),
-                      TouristInput.routeName: (ctx) => TouristInput(),
-                    },
-                  ))),
-    );
+              accentColor: Color(0xff29ffd6),
+            ),
+            home: Splash()));
+  }
+}
+
+class Splash extends StatefulWidget {
+  @override
+  SplashState createState() => new SplashState();
+}
+
+class SplashState extends State<Splash> {
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _seen = (prefs.getBool('seen') ?? false);
+
+    if (_seen) {
+      Navigator.of(context).pushReplacement(new MaterialPageRoute(
+          builder: (context) => new Wrapper())); 
+    } else {
+      prefs.setBool('seen', true);
+      Navigator.of(context).pushReplacement(
+          new MaterialPageRoute(builder: (context) => new Container(child: Text('Hello'),)));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkFirstSeen();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SplashScreen();
   }
 }
