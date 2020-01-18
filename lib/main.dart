@@ -18,14 +18,13 @@ class MyApp extends StatelessWidget {
           ),
         ],
 
-        // create: (context) => Products(),
         child: Consumer<Auth>(
             builder: (ctx, auth, _) => MaterialApp(
-                  title: 'MyShop',
+                  title: 'HearthHome',
                   theme: ThemeData(
-                    primaryColor: Colors.purple,
-                    accentColor: Colors.deepOrange,
-                    fontFamily: 'Lato',
+                    primaryColor: Color(0xff2893ff),
+                    accentColor: Color(0xff29ffd6),
+                    fontFamily: 'Standard',
                   ),
                   home: auth.isAuth
                       ? SplitScreen()
