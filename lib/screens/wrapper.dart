@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/auth_screen.dart';
