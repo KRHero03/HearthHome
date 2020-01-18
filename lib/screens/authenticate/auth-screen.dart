@@ -23,7 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -35,51 +35,60 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }*/
 
-  _signInWithEmailandPassword() async {
+  _signInWithEmailandPassword() {
     setState(() {
       loading = true;
     });
     email = _emailController.text;
     password = _passwordController.text;
-    print(password);
+    print('password' + password);
     if (EmailValidator.validate(email)) {
       if (password.length > 6 && password.length < 20) {
-        FirebaseUser result =
-            await _auth.signInWithEmailAndPassword(email, password);
-        if (result == null) {
-          return showDialog(
-              context: context,
-              builder: (context) {
-                return CustomAlertDialog(
-                    title: 'HearthHome - Sign In',
-                    message:
-                        'You have entered incorrect Email or Password! Try again.');
+        _auth.signInWithEmailAndPassword(email, password).then((result) async {
+          print(result);
+          if (result == null) {
+            await _auth.createUser(email, password).then((val) {
+              print(val);
+              val.sendEmailVerification().then((onValue) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CustomAlertDialog(
+                          title: 'HearthHome - Sign In',
+                          message:
+                              'Your HearthHome account has been created!\nPlease verify your Email Address!');
+                    });
               });
-          setState(() {
-            loading = false;
-          });
-        } else {
-          if (result.isEmailVerified) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => SplitScreen()));
-          } else {
-            result.sendEmailVerification().then((val) {
-              Fluttertoast.showToast(
-                  msg: "Please verify your Email Address!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 2,
-                  backgroundColor: Color(0xfff3f5ff),
-                  textColor: Theme.of(context).primaryColor,
-                  fontSize: 16.0);
-            });
-            setState(() {
+            }).catchError((onError){
+              setState(() {
               loading = false;
             });
+            });
+
+            
+          } else {
+            if (result.isEmailVerified) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => SplitScreen()));
+            } else {
+              result.sendEmailVerification().then((val) {
+                Fluttertoast.showToast(
+                    msg: "Please verify your Email Address!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIos: 2,
+                    backgroundColor: Color(0xfff3f5ff),
+                    textColor: Theme.of(context).primaryColor,
+                    fontSize: 16.0);
+              });
+              setState(() {
+                loading = false;
+              });
+            }
           }
-        }
+        });
       } else {
-        return showDialog(
+        showDialog(
             context: context,
             builder: (context) {
               return CustomAlertDialog(
@@ -91,7 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
         });
       }
     } else {
-      return showDialog(
+      showDialog(
           context: context,
           builder: (context) {
             return CustomAlertDialog(
@@ -175,9 +184,6 @@ class _AuthScreenState extends State<AuthScreen> {
                               fontFamily: 'Standard',
                               color: Theme.of(context).primaryColor,
                             )),
-                        onChanged: (val) {
-                          email = val;
-                        },
                       ),
                     ),
                   ),
@@ -201,9 +207,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             fontFamily: 'Standard',
                             color: Theme.of(context).primaryColor,
                           )),
-                      onChanged: (val) {
-                        password = val;
-                      },
                     ),
                   ),
                   Padding(

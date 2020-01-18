@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
@@ -34,7 +35,9 @@ class TouristInputState extends State<TouristInput> {
   }
 
   Future getImage() async {
-    // var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery).then((onValue){
+      print(onValue.toString());
+    });
 
     setState(() {
       //    _image = image;
@@ -109,12 +112,12 @@ class TouristInputState extends State<TouristInput> {
             ),
             CountryPicker(
               dense: false,
-              showFlag: true, 
-              showDialingCode: true, 
-              showName: true, 
-              showCurrency: false, 
-              showCurrencyISO: false, 
 
+              showFlag: true,
+              showDialingCode: true,
+              showName: true,
+              showCurrency: false,
+              showCurrencyISO: false,
               onChanged: (Country country) {
                 setState(() {
                   _country = country;
@@ -204,13 +207,25 @@ class TouristInputState extends State<TouristInput> {
           ],
         ),
       ),
-      bottomNavigationBar: ButtonTheme(
-        height: 40,
-        minWidth: double.infinity,
-        child: FlatButton(
-          color: Theme.of(context).primaryColor,
-          child: Text('Next'),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(top: 20),
+        child: MaterialButton(
           onPressed: () {},
+          child: Text(
+            'I AM A HOST',
+            style: TextStyle(
+              fontSize: 15,
+              fontFamily: 'Standard',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          color: Theme.of(context).accentColor,
+          elevation: 0,
+          minWidth: 400,
+          height: 50,
+          textColor: Colors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
