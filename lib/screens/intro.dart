@@ -1,5 +1,5 @@
 
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:hearthhome/screens/wrapper.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -30,8 +30,8 @@ class _IntroState extends State<Intro> {
           color: Color(0xfff3f5ff),
         ),
         description: "Your one stop App for pure experiences of your tours throughout",
-        pathImage: 'assets/images/Intro/Slide1.png',
-        backgroundColor: Theme.of(context).primaryColor,
+        pathImage: 'assets/icon/icon_round.png',
+        backgroundColor: Color(0xff2893ff),
       ),
     );
     slides.add(
@@ -40,12 +40,12 @@ class _IntroState extends State<Intro> {
         styleTitle: TextStyle(
           fontSize: 50,
           fontFamily: 'Standard',
-          color: Theme.of(context).primaryColor,
+          color: Color(0xff2893ff),
         ),
         styleDescription: TextStyle(
           fontSize: 25,
           fontFamily: 'Standard',
-          color: Theme.of(context).primaryColor,
+          color: Color(0xff2893ff),
         ),
         description:
             "All your bookings on your fingertips. Find a heart-warming home that will match your personality and experience the local life to the fullest!",
@@ -70,7 +70,7 @@ class _IntroState extends State<Intro> {
         description:
             "Already got plans? We understand. Cancel your subsciptions anytime, for any day, but, before they are delivered!",
         pathImage: "assets/images/Intro/Slide3.png",
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xff2893ff),
       ),
     );
   }
@@ -112,7 +112,7 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
-    return new IntroSlider(
+    return  IntroSlider(
       slides: this.slides,
       onDonePress: this.onDonePress,
       onSkipPress: this.onSkipPress,
@@ -120,8 +120,9 @@ class _IntroState extends State<Intro> {
       renderNextBtn: renderNextBtn(),
       renderSkipBtn: renderSkipBtn(),
       colorDot: Color(0xff000000),
-      colorActiveDot: Theme.of(context).accentColor,
+      colorActiveDot:Color(0xff4edbf2),
       sizeDot: 10.0,
     );
   }
 }
+*/

@@ -1,19 +1,50 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hearthhome/screens/intro.dart';
-import 'package:hearthhome/screens/splash_screen.dart';
-import 'package:hearthhome/screens/wrapper.dart';
-import 'package:hearthhome/services/auth.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(new MyApp());
-}
+import 'package:flutter/material.dart';
+import 'package:hearthhome/screens/auth_screen.dart';
+import 'package:provider/provider.dart';
+import './screens/splash_screen.dart';
+import './provider/auth.dart';
+import './screens/split_screen.dart';
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(
+            value: Auth(),
+          ),
+        ],
+
+        // create: (context) => Products(),
+        child: Consumer<Auth>(
+            builder: (ctx, auth, _) => MaterialApp(
+                  title: 'MyShop',
+                  theme: ThemeData(
+                    primaryColor: Colors.purple,
+                    accentColor: Colors.deepOrange,
+                    fontFamily: 'Lato',
+                  ),
+                  home: auth.isAuth
+                      ? SplitScreen()
+                      : FutureBuilder(
+                          future: auth.tryAutoLogin(),
+                          builder: (ctx, authResult) =>
+                              authResult.connectionState ==
+                                      ConnectionState.waiting
+                                  ? SplashScreen()
+                                  : AuthScreen(),
+                        ),
+                  routes: {
+                    
+                  },
+                )));
+  }
+}
+
+/*class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -42,14 +73,14 @@ class SplashState extends State<Splash> {
     await SharedPreferences.getInstance().then((prefs) {
       bool _seen = (prefs.getBool('seen') ?? false);
       print(_seen);
-      if (_seen) {
+      if (!_seen) {
         Navigator.of(context).pushReplacement(
             new MaterialPageRoute(builder: (context) => new Wrapper()));
       } else {
         prefs.setBool('seen', true);
         Navigator.of(context).pushReplacement(new MaterialPageRoute(
-            builder: (context) => new Container(
-                  child: Intro(),
+            builder: (context) => new Scaffold(
+                  body: Intro(),
                 )));
       }
     });
@@ -65,4 +96,4 @@ class SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return SplashScreen();
   }
-}
+}*/

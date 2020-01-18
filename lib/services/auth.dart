@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class AuthService {
   //Authentication Firebase Object
@@ -22,27 +23,35 @@ class AuthService {
 
   Future<FirebaseUser> signInWithEmailAndPassword(
       String email, String password) async {
-    await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((onError) {
-      return null;
-    }).then((result) {
-      final FirebaseUser user = result.user;
+    try {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .catchError((onError) {
+        return null;
+      }).then((result) {
+        final FirebaseUser user = result.user;
 
-      return user;
-    });
+        return user;
+      });
+    } on PlatformException {
+      return null;
+    }
   }
 
   Future<FirebaseUser> createUser(String email, String password) async {
-    await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .catchError((onError) {
-      return null;
-    }).then((result) {
-      final FirebaseUser user = result.user;
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .catchError((onError) {
+        return null;
+      }).then((result) {
+        final FirebaseUser user = result.user;
 
-      return user;
-    });
+        return user;
+      });
+    } on PlatformException  {
+      return null;
+    }
   }
 
   /*Future<FirebaseUser> signInWithGoogle() async {
