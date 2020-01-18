@@ -162,6 +162,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                   'Pincode': pincode
                 },
                 'Phone': phone,
+                'Available':'True',
                 'Household': {
                   'AdultMale': adultMale,
                   'AdultFemale': adultFemale,

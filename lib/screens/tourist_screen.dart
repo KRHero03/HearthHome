@@ -174,7 +174,7 @@ class TouristInputState extends State<TouristInput> {
             SizedBox(
               height: 10,
             ),
-             DelayedAnimation(
+            DelayedAnimation(
               delay: 300,
               child: Row(
                 children: <Widget>[
@@ -215,7 +215,6 @@ class TouristInputState extends State<TouristInput> {
                 ],
               ),
             ),
-            
             DelayedAnimation(
                 child: Wrap(children: <Widget>[
                   Padding(
@@ -277,7 +276,6 @@ class TouristInputState extends State<TouristInput> {
                 ),
               ),
             ),
-           
             DelayedAnimation(
                 child: Wrap(children: <Widget>[
                   Padding(
