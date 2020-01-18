@@ -9,6 +9,7 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProviderInfo extends StatefulWidget {
+  static const routeName = 'providerInfo';
   @override
   State<StatefulWidget> createState() {
     return ProviderInfoState();

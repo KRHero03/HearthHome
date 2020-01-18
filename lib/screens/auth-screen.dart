@@ -150,6 +150,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrorDialog(message);
     } catch (error) {
+      print(error);
       var message = 'could not auth you';
       _showErrorDialog(message);
     }
