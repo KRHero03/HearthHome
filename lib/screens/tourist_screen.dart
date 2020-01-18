@@ -9,12 +9,9 @@ import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:provider/provider.dart';
-//import 'package:image_picker_modern/image_picker_modern.dart';
 import '../models/tourist_save_data.dart';
-import 'dart:async';
 import 'dart:io';
 import '../provider/auth.dart';
 
@@ -34,7 +31,7 @@ class TouristInputState extends State<TouristInput> {
   String govIDURL = 'NA';
   var _gender = ['Male', 'Female'];
   var _selectedGender=0;
-  var _country;
+  Country _country = Country.IN;
 
   var _isloading = false;
   void dispose() {
@@ -62,7 +59,7 @@ class TouristInputState extends State<TouristInput> {
       if (_nameController.text.isNotEmpty &&
           NameValidator.validate(_nameController.text) &&
           _govCode.text.isNotEmpty &&
-          (_country.dialingCode + _numberController.text) == 12 &&
+          (_country.dialingCode.length + _numberController.text.length) == 12 &&
           govIDURL != null) {
         setState(() {
           _isloading = true;
@@ -80,8 +77,8 @@ class TouristInputState extends State<TouristInput> {
           govId: _govCode.text,
           phone: '+${_country.dialingCode}${_numberController.text}',
           gender: _gender[_selectedGender],
-          profilePicUrl: govIDURL,
-          govIdUrl: '',
+          profilePicUrl: '',
+          govIdUrl:govIDURL,
           userID: _auth.userId,
           country: _country.name,
         );
@@ -95,7 +92,7 @@ class TouristInputState extends State<TouristInput> {
             context: context,
             builder: (ctx) => CustomAlertDialog(
                   title: 'HearthHome Details',
-                  message: 'Please enter valid Household details!',
+                  message: 'Please enter valid details!',
                 ));
       }
     }
@@ -309,7 +306,7 @@ class TouristInputState extends State<TouristInput> {
                       fontFamily: 'Standard'),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: '',
+                      labelText: 'Government Issued Identification Number',
                       prefixIcon: Icon(
                         MdiIcons.codeBracesBox,
                         color: Theme.of(context).primaryColor,

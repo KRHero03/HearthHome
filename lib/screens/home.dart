@@ -45,8 +45,18 @@ class _HomeState extends State<Home> {
 
   FirebaseDatabase db = FirebaseDatabase.instance;
   void initState() {
-    db.reference().child('Users').child('Host').once().then((snap) {
-      print(snap.value);
+   
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+     db.reference().child('Users').child('Host').once().then((snap) {
+      Map<dynamic, dynamic> values = snap.value;
+     values.forEach((key,values) {
+      print(values["Name"]);
+    });
       //   snap.value.map((key, value) {
 
       // data.add(HomeData(
@@ -63,15 +73,10 @@ class _HomeState extends State<Home> {
         _isloading = false;
       });
     });
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (!_isloading) print(data);
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           iconTheme: IconThemeData(color: Color(0xff2893ff)),
           backgroundColor: Color(0xfff3f5ff),
           elevation: 1.0,
@@ -101,7 +106,8 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        body: _isloading
+        body: WillPopScope(
+          child: _isloading
               ? Center(child: CircularProgressIndicator())
               : FlatButton(
                   child: Text('logout'),
@@ -109,14 +115,16 @@ class _HomeState extends State<Home> {
                     Provider.of<Auth>(context, listen: false).logOut();
                   },
                 ),
-          // : ListView.builder(
-          //     itemCount: data.length,
-          //     itemBuilder: (ctx, i) {
-          //       return Container(
+          onWillPop: () async => false,
+        )
+        // : ListView.builder(
+        //     itemCount: data.length,
+        //     itemBuilder: (ctx, i) {
+        //       return Container(
 
-          //       );
-          //     },
-          //   ),
+        //       );
+        //     },
+        //   ),
         );
   }
 }
