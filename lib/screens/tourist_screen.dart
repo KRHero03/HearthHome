@@ -33,7 +33,7 @@ class TouristInputState extends State<TouristInput> {
   File govIDFile;
   String govIDURL = 'NA';
   var _gender = ['Male', 'Female'];
-  var _selectedGender=0;
+  var _selectedGender = 0;
   var _country;
 
   var _isloading = false;
@@ -62,7 +62,7 @@ class TouristInputState extends State<TouristInput> {
       if (_nameController.text.isNotEmpty &&
           NameValidator.validate(_nameController.text) &&
           _govCode.text.isNotEmpty &&
-          (_country.dialingCode + _numberController.text) == 12 &&
+          (_country.dialingCode.length + _numberController.text.length) == 12 &&
           govIDURL != null) {
         setState(() {
           _isloading = true;
@@ -80,8 +80,8 @@ class TouristInputState extends State<TouristInput> {
           govId: _govCode.text,
           phone: '+${_country.dialingCode}${_numberController.text}',
           gender: _gender[_selectedGender],
-          profilePicUrl: govIDURL,
-          govIdUrl: '',
+          profilePicUrl: '',
+          govIdUrl: govIDURL,
           userID: _auth.userId,
           country: _country.name,
         );
@@ -177,7 +177,7 @@ class TouristInputState extends State<TouristInput> {
             SizedBox(
               height: 10,
             ),
-             DelayedAnimation(
+            DelayedAnimation(
               delay: 300,
               child: Row(
                 children: <Widget>[
@@ -218,7 +218,6 @@ class TouristInputState extends State<TouristInput> {
                 ],
               ),
             ),
-            
             DelayedAnimation(
                 child: Wrap(children: <Widget>[
                   Padding(
@@ -280,7 +279,6 @@ class TouristInputState extends State<TouristInput> {
                 ),
               ),
             ),
-           
             DelayedAnimation(
                 child: Wrap(children: <Widget>[
                   Padding(

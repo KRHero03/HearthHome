@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hearthhome/screens/auth_screen.dart';
@@ -8,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './screens/splash_screen.dart';
 import './provider/auth.dart';
 import './screens/split_screen.dart';
+import 'screens/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -69,15 +69,12 @@ class SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    
-    
     return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(
             value: Auth(),
           ),
         ],
-
         child: Consumer<Auth>(
             builder: (ctx, auth, _) => MaterialApp(
                   title: 'HearthHome',
@@ -87,7 +84,7 @@ class SplashState extends State<Splash> {
                     fontFamily: 'Standard',
                   ),
                   home: auth.isAuth
-                      ? SplitScreen()
+                      ? Home()
                       : FutureBuilder(
                           future: auth.tryAutoLogin(),
                           builder: (ctx, authResult) =>
@@ -96,10 +93,7 @@ class SplashState extends State<Splash> {
                                   ? SplashScreen()
                                   : AuthScreen(),
                         ),
-                  routes: {
-                    
-                  },
+                  routes: {},
                 )));
-                }
-
+  }
 }
