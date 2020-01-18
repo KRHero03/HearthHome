@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
@@ -23,10 +24,12 @@ class TouristInputState extends State<TouristInput> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
   final _govCode = TextEditingController();
-  File _image;
+  File govIDFile;
+  String govIDURL = 'NA';
   var _country;
 
-  void dispose() { //9967638666
+  void dispose() {
+    //9967638666
     _nameController.dispose();
     _numberController.dispose();
     _govCode.dispose();
@@ -34,18 +37,18 @@ class TouristInputState extends State<TouristInput> {
     super.dispose();
   }
 
-  Future getImage() async {
-    // var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      //    _image = image;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     LocationResult result;
     String address;
+    _pickImage() async {
+      await ImagePicker.pickImage(source: ImageSource.gallery).then((val) {
+        setState(() {
+          govIDURL = val.path;
+          govIDFile = val;
+        });
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -204,23 +207,36 @@ class TouristInputState extends State<TouristInput> {
               height: 40,
             ),
             DelayedAnimation(
-              delay: 300,
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: _image == null
-                        ? Text('No image selected.')
-                        : Image.file(_image),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  FloatingActionButton(
-                    onPressed: getImage,
-                    tooltip: 'Pick Image',
-                    child: Icon(Icons.add_a_photo),
-                  ),
-                ],
+              child: Padding(
+                padding: EdgeInsets.only(top: 10, left: 5, right: 5),
+                child: govIDURL == 'NA'
+                    ? Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          'Upload your Government ID Photo',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Standard',
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            image:
+                                DecorationImage(image: FileImage(govIDFile)))),
+              ),
+              delay: 200,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10, left: 5, right: 5),
+              child: FloatingActionButton(
+                onPressed: _pickImage,
+                tooltip: 'Pick Image',
+                child: Icon(Icons.add_a_photo),
               ),
             ),
             SizedBox(

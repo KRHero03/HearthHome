@@ -101,12 +101,7 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            Future.value(
-                false); //return a `Future` with false value so this route cant be popped or closed.
-          },
-          child: _isloading
+        body: _isloading
               ? Center(child: CircularProgressIndicator())
               : FlatButton(
                   child: Text('logout'),
@@ -122,6 +117,6 @@ class _HomeState extends State<Home> {
           //       );
           //     },
           //   ),
-        ));
+        );
   }
 }
