@@ -16,7 +16,6 @@ import 'package:hearthhome/widgets/delayed_animation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ProviderInfo extends StatefulWidget {
@@ -163,6 +162,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                   'Pincode': pincode
                 },
                 'Phone': phone,
+                'Available':'True',
                 'Household': {
                   'AdultMale': adultMale,
                   'AdultFemale': adultFemale,

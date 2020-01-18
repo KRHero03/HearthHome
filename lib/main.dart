@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hearthhome/screens/auth_screen.dart';
-import 'package:hearthhome/screens/wrapper.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import './screens/splash_screen.dart';
 import './provider/auth.dart';
 import './screens/split_screen.dart';
