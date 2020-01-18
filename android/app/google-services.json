@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "534454252851",
+    "firebase_url": "https://hearthhome-60634.firebaseio.com",
+    "project_id": "hearthhome-60634",
+    "storage_bucket": "hearthhome-60634.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534454252851:android:c45624ae7c4a188e7aba46",
+        "android_client_info": {
+          "package_name": "com.xlr8.hearthhome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534454252851-pdttan0cau3093gsfjjhsg3luoa9r3d0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xlr8.hearthhome",
+            "certificate_hash": "e634b729ad43c8dec250ff64150da95c821e83af"
+          }
+        },
+        {
+          "client_id": "534454252851-hc16gsuppak778vgo2oqm1nc8ec6bgj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7uqKJdL0vehi5vRcUbDyvb2m0gJksLb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534454252851-hc16gsuppak778vgo2oqm1nc8ec6bgj7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
