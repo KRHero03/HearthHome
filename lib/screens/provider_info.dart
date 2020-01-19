@@ -96,16 +96,16 @@ class ProviderInfoState extends State<ProviderInfo> {
     }
 
     _submitDetails() async {
-       name = _nameController.text;
-          address = _addressController.text;
-          countryName = _country.name;
-          phone = _country.dialingCode + _phoneController.text;
-          pincode = _pinCodeController.text;
-          govID = _govCode.text;
-          adultMale = _adultMaleController.text;
-          adultFemale = _adultFemaleController.text;
-          childrenMale = _childrenMaleController.text;
-          childrenFemale = _childrenFemaleController.text;
+      name = _nameController.text;
+      address = _addressController.text;
+      countryName = _country.name;
+      phone = _country.dialingCode + _phoneController.text;
+      pincode = _pinCodeController.text;
+      govID = _govCode.text;
+      adultMale = _adultMaleController.text;
+      adultFemale = _adultFemaleController.text;
+      childrenMale = _childrenMaleController.text;
+      childrenFemale = _childrenFemaleController.text;
       if (NameValidator.validate(name) &&
           phone.length == 12 &&
           address.isNotEmpty &&
@@ -126,7 +126,7 @@ class ProviderInfoState extends State<ProviderInfo> {
           setState(() {
             submitting = true;
           });
-         
+
           StorageReference govIDRef = FirebaseStorage.instance
               .ref()
               .child('Host')
@@ -163,7 +163,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                   'Pincode': pincode
                 },
                 'Phone': phone,
-                'Available':'True',
+                'Available': 'True',
                 'Household': {
                   'AdultMale': adultMale,
                   'AdultFemale': adultFemale,

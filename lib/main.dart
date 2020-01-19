@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hearthhome/agora/main.dart';
 import 'package:hearthhome/screens/auth_screen.dart';
 import 'package:hearthhome/screens/split_screen.dart';
 import 'package:provider/provider.dart';
 import './screens/splash_screen.dart';
 import './provider/auth.dart';
 import 'screens/home.dart';
+import 'screens/split_screen.dart';
 
 void main() => runApp(MyApp());
 

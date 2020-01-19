@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:hearthhome/models/enum.dart';
+import 'package:hearthhome/widgets/circular_image_view.dart';
 import '../utils/settings.dart';
 
 class CallPage extends StatefulWidget {
@@ -31,9 +33,9 @@ class _CallPageState extends State<CallPage> {
 
   @override
   void initState() {
+    initialize();
     super.initState();
     // initialize agora sdk
-    initialize();
   }
 
   Future<void> initialize() async {
@@ -278,8 +280,8 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
-  void _onCallEnd(BuildContext context) {
-    Navigator.pop(context);
+  void _onCallEnd(BuildContext context) {    
+    Navigator.pop(context);    
   }
 
   void _onToggleMute() {
@@ -296,9 +298,36 @@ class _CallPageState extends State<CallPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
-      ),
+       appBar: AppBar(
+          iconTheme: IconThemeData(color: Color(0xff2893ff)),
+          backgroundColor: Color(0xfff3f5ff),
+          elevation: 1.0,
+          title: new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              CircularImageView(
+                w: 50,
+                h: 50,
+                imageLink: 'assets/icon/icon_round.png',
+                imgSrc: ImageSourceENUM.Asset,
+              ),
+              Wrap(children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Text(
+                    'HearthHome - Video Call',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'Standard',
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ])
+            ],
+          ),
+        ),
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(

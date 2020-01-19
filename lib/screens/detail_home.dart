@@ -6,6 +6,7 @@ import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -315,13 +316,21 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
                             'ChannelID': (_auth.userId + data.key).toString(),
                             'Status': 1,
                             'Timestamp': ServerValue.timestamp
-                          }).then((res) async {
+                          }).whenComplete(() async {
                             print('send notif');
+                            await PermissionHandler().requestPermissions(
+                              [
+                                PermissionGroup.camera,
+                                PermissionGroup.microphone
+                              ],
+                            );
+                            // push video page with given channel name
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CallPage(
-                                  channelName: _auth.userId + data.key,
+                                  channelName:
+                                      (_auth.userId + data.key).toString(),
                                 ),
                               ),
                             );
