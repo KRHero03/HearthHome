@@ -9,6 +9,7 @@ import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/models/keys.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/home.dart';
+import 'package:hearthhome/screens/notification.dart';
 import 'package:hearthhome/services/name_validator.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
@@ -95,28 +96,28 @@ class ProviderInfoState extends State<ProviderInfo> {
     }
 
     _submitDetails() async {
-       name = _nameController.text;
-          address = _addressController.text;
-          countryName = _country.name;
-          phone = _country.dialingCode + _phoneController.text;
-          pincode = _pinCodeController.text;
-          govID = _govCode.text;
-          adultMale = _adultMaleController.text;
-          adultFemale = _adultFemaleController.text;
-          childrenMale = _childrenMaleController.text;
-          childrenFemale = _childrenFemaleController.text;
+      name = _nameController.text;
+      address = _addressController.text;
+      countryName = _country.name;
+      phone = _country.dialingCode + _phoneController.text;
+      pincode = _pinCodeController.text;
+      govID = _govCode.text;
+      adultMale = _adultMaleController.text;
+      adultFemale = _adultFemaleController.text;
+      childrenMale = _childrenMaleController.text;
+      childrenFemale = _childrenFemaleController.text;
       if (NameValidator.validate(name) &&
-          phone.length == 12 &&
-          address.isNotEmpty &&
-          govID.isNotEmpty &&
-          govIDFile != null &&
-          houseImageFile.length != 0 &&
-          pincode.length == 6 &&
-          latitude != null &&
-          longitude != null &&
-          adultFemale != null &&
-          adultMale != null &&
-          childrenMale != null &&
+          // phone.length == 12 &&
+          // address.isNotEmpty &&
+          // govID.isNotEmpty &&
+          // govIDFile != null &&
+          // houseImageFile.length != 0 &&
+          // pincode.length == 6 &&
+          // latitude != null &&
+          // longitude != null &&
+          // adultFemale != null &&
+          // adultMale != null &&
+          // childrenMale != null &&
           childrenFemale != null) {
         if (int.parse(adultMale) <= 5 &&
             int.parse(adultFemale) <= 5 &&
@@ -125,7 +126,7 @@ class ProviderInfoState extends State<ProviderInfo> {
           setState(() {
             submitting = true;
           });
-         
+
           StorageReference govIDRef = FirebaseStorage.instance
               .ref()
               .child('Host')
@@ -162,7 +163,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                   'Pincode': pincode
                 },
                 'Phone': phone,
-                'Available':'True',
+                'Available': 'True',
                 'Household': {
                   'AdultMale': adultMale,
                   'AdultFemale': adultFemale,
@@ -173,7 +174,9 @@ class ProviderInfoState extends State<ProviderInfo> {
                 'GovIDURL': govIDURL
               }).then((onValue) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Home()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationScreen()));
                 setState(() {
                   submitting = false;
                 });

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/home.dart';
@@ -23,7 +24,7 @@ class NotificationData {
 }
 
 class NotificationScreenState extends State<NotificationScreen> {
-  List<NotificationData> items;
+  List<NotificationData> items = [];
   StreamSubscription<Event> _onItemAddedSub,
       _onItemChangedSub,
       _onItemRemovedSub;
@@ -32,11 +33,14 @@ class NotificationScreenState extends State<NotificationScreen> {
   bool isLoading = false;
   void _onItemAdded(Event event) {
     setState(() {
-      items.add(new NotificationData(
-          uid: event.snapshot.key,
-          channelID: event.snapshot.value['ChannelID'],
-          timeStamp: event.snapshot.value['Timestamp'],
-          status: event.snapshot.value['Status']));
+      items = [];
+      items.insert(
+          0,
+          new NotificationData(
+              uid: event.snapshot.key,
+              channelID: event.snapshot.value['ChannelID'].toString(),
+              timeStamp: event.snapshot.value['Timestamp'].toString(),
+              status: event.snapshot.value['Status'].toString()));
     });
   }
 
@@ -46,9 +50,9 @@ class NotificationScreenState extends State<NotificationScreen> {
     setState(() {
       items[items.indexOf(oldItemVal)] = new NotificationData(
           uid: event.snapshot.key,
-          channelID: event.snapshot.value['ChannelID'],
-          timeStamp: event.snapshot.value['Timestamp'],
-          status: event.snapshot.value['Status']);
+          channelID: event.snapshot.value['ChannelID'].toString(),
+          timeStamp: event.snapshot.value['Timestamp'].toString(),
+          status: event.snapshot.value['Status'].toString());
     });
   }
 
@@ -115,6 +119,7 @@ class NotificationScreenState extends State<NotificationScreen> {
           child: isLoading
               ? Center(child: CircularProgressIndicator())
               : ListView.builder(
+                  shrinkWrap: true,
                   itemCount: items.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
@@ -122,61 +127,113 @@ class NotificationScreenState extends State<NotificationScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       elevation: 3.0,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: Color(0xfff3f5ff),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            height: 200,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: Text(items[index].uid),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: MaterialButton(
-                                      onPressed: submitting ? null : () {},
-                                      child: submitting
-                                          ? CircularProgressIndicator()
-                                          : SingleChildScrollView(
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(MdiIcons.phone),
-                                                  Text(
-                                                    items[index].status == '0'
-                                                        ? 'CALL AGAIN'
-                                                        : 'CALL',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontFamily: 'Standard',
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xfff3f5ff),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          height: 200,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Text(items[index].uid),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: MaterialButton(
+                                    onPressed: submitting
+                                        ? null
+                                        : () async {
+                                            if (items[index].status == '1') {
+                                              await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CallPage(
+                                                    channelName:
+                                                        items[index].channelID,
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              FirebaseDatabase db =
+                                                  FirebaseDatabase.instance;
+                                              DatabaseReference dbRef = db
+                                                  .reference()
+                                                  .child('Notifications')
+                                                  .child(items[index].uid)
+                                                  .child(_auth.userId);
+                                              dbRef.set({
+                                                'ChannelID': (_auth.userId +
+                                                        items[index].uid)
+                                                    .toString(),
+                                                'Status': 1,
+                                                'Timestamp':
+                                                    ServerValue.timestamp
+                                              }).then((res) async {
+                                                print('send notif');
+                                                await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CallPage(
+                                                      channelName:
+                                                          _auth.userId +
+                                                              items[index].uid,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                );
+                                                dbRef.set({
+                                                  'ChannelID': (_auth.userId +
+                                                          items[index].uid)
+                                                      .toString(),
+                                                  'Status': 0,
+                                                  'Timestamp':
+                                                      ServerValue.timestamp
+                                                }).then((onValue) {
+                                                  print('call end');
+                                                });
+                                              }).catchError((onError) {
+                                                print(onError);
+                                              });
+                                            }
+                                          },
+                                    child: submitting
+                                        ? CircularProgressIndicator()
+                                        : SingleChildScrollView(
+                                            child: Row(
+                                              children: <Widget>[
+                                                Icon(MdiIcons.phone),
+                                                Text(
+                                                  items[index].status == '0'
+                                                      ? 'CALL AGAIN'
+                                                      : 'CALL',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontFamily: 'Standard',
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                      color: Theme.of(context).accentColor,
-                                      elevation: 0,
-                                      minWidth: 400,
-                                      height: 50,
-                                      textColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
+                                          ),
+                                    color: Theme.of(context).accentColor,
+                                    elevation: 0,
+                                    minWidth: 400,
+                                    height: 50,
+                                    textColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                   ),
-                                ],
-                              ),
-                            )),
-                      ),
+                                ),
+                              ],
+                            ),
+                          )),
                     );
                   },
                 ),

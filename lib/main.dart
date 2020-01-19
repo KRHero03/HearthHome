@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/splash_screen.dart';
 import './provider/auth.dart';
 import 'screens/home.dart';
+import 'screens/split_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -80,7 +81,7 @@ class SplashState extends State<Splash> {
                     fontFamily: 'Standard',
                   ),
                   home: auth.isAuth
-                      ? Home()
+                      ? SplitScreen()
                       : FutureBuilder(
                           future: auth.tryAutoLogin(),
                           builder: (ctx, authResult) =>
