@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../provider/auth.dart';
@@ -103,17 +104,9 @@ class _AuthCardState extends State<AuthCard> {
   void _showErrorDialog(String message) {
     showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An Error Occurerd'),
-              content: Text(message),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Okay'),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                )
-              ],
+        builder: (ctx) => CustomAlertDialog(
+              title: 'HearthHome Sign In',
+              message: message==null?'Oops...An error occured!\nPlease try again later.':message,
             ));
   }
 
@@ -121,7 +114,6 @@ class _AuthCardState extends State<AuthCard> {
 
   void _submit() async {
     if (!_formKey.currentState.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState.save();
@@ -137,17 +129,17 @@ class _AuthCardState extends State<AuthCard> {
             .signup(_authData['email'], _authData['password']);
       }
     } catch (error) {
-      var message = 'Auth failed';
+      var message = 'Oops...An error occured!\nPlease try again later.';
       if (error.toString().contains('EMAIL_EXISTS')) {
-        message = 'This email is in use';
+        message = 'This email is already in use!\nPlease check your email!';
       } else if (error.toString().contains('INVALID_EMAIL')) {
-        message = 'Not valid Email';
+        message = 'Please check your email!';
       } else if (error.toString().contains('WEAK_PASSWORD')) {
-        message = 'This password is too Weak';
+        message = 'Your password is too weak!\nPlease check your password.';
       }
       _showErrorDialog(message);
     } catch (error) {
-      var message = 'could not auth you';
+      var message = 'Oops...An error occured!\nPlease try again later.';
       _showErrorDialog(message);
     }
     setState(() {

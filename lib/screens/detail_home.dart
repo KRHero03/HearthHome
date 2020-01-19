@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
+import 'package:hearthhome/widgets/alert/confirm_dialog.dart';
 import 'package:hearthhome/widgets/delayed_animation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -55,6 +56,15 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
           isLoadingMap = false;
         });
       }
+    }
+
+    _confirmBooking(){
+      showDialog(
+        context: context,
+        builder: (ctx) => CustomConfirmDialog(
+              title: 'HearthHome Confirm Booking',
+              message: 'Are you sure you want to proceed with the booking?\nNote that your details will be shared with the Host.\nLikewise, if the Host accepts, you will have their details.',
+            ));
     }
 
     return Scaffold(
@@ -298,7 +308,7 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
               delay: 300,
               child: Padding(
                 padding:
-                    EdgeInsets.only(top: 20, bottom: 10, left: 15, right: 15),
+                    EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: _isloaded
                     ? CircularProgressIndicator()
                     : MaterialButton(
@@ -307,15 +317,40 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
                             _isloaded = true;
                           });
                           FirebaseDatabase db = FirebaseDatabase.instance;
+                          String _hostName = '';
+                          String _touristname = '';
+                          await db
+                              .reference()
+                              .child('Users')
+                              .child('Host')
+                              .child(data.key)
+                              .child('Name')
+                              .once()
+                              .then((name) {
+                            _hostName = name.value;
+                          });
+                          await db
+                              .reference()
+                              .child('Users')
+                              .child('Tourist')
+                              .child(_auth.userId)
+                              .child('Name')
+                              .once()
+                              .then((name) {
+                            _touristname = name.value;
+                          });
                           DatabaseReference dbRef = db
                               .reference()
                               .child('Notifications')
                               .child(data.key)
                               .child(_auth.userId);
+
                           dbRef.set({
                             'ChannelID': (_auth.userId + data.key).toString(),
                             'Status': 1,
-                            'Timestamp': ServerValue.timestamp
+                            'Timestamp': ServerValue.timestamp,
+                            'HostName': _hostName,
+                            'TouristName': _touristname,
                           }).whenComplete(() async {
                             print('send notif');
                             await PermissionHandler().requestPermissions(
@@ -337,7 +372,9 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
                             dbRef.set({
                               'ChannelID': (_auth.userId + data.key).toString(),
                               'Status': 0,
-                              'Timestamp': ServerValue.timestamp
+                              'Timestamp': ServerValue.timestamp,
+                              'HostName': _hostName,
+                              'TouristName': _touristname,
                             }).then((onValue) {
                               print('call end');
                               setState(() {
@@ -355,6 +392,40 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
                               Icon(MdiIcons.video, color: Color(0xfff3f5ff)),
                               Text(
                                 'VIDEO CALL',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: 'Standard',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ])),
+                        color: Theme.of(context).accentColor,
+                        elevation: 0,
+                        minWidth: 400,
+                        height: 50,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+              ),
+            ),
+              DelayedAnimation(
+              delay: 300,
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 20, bottom: 10, left: 15, right: 15),
+                child: _isloaded
+                    ? CircularProgressIndicator()
+                    : MaterialButton(
+                        onPressed:_confirmBooking,                         
+                         
+                        child: SingleChildScrollView(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                              Icon(MdiIcons.check, color: Color(0xfff3f5ff)),
+                              Text(
+                                'CONFIRM BOOKING',
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'Standard',

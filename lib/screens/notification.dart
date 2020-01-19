@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/provider/auth.dart';
@@ -20,8 +21,9 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class NotificationData {
-  final String uid, channelID, timeStamp, status;
-  NotificationData({this.uid, this.channelID, this.timeStamp, this.status});
+  final String uid, channelID, timeStamp, status, name;
+  NotificationData(
+      {this.uid, this.channelID, this.timeStamp, this.status, this.name});
 }
 
 class NotificationScreenState extends State<NotificationScreen> {
@@ -36,6 +38,7 @@ class NotificationScreenState extends State<NotificationScreen> {
     setState(() {
       items = [];
       items.add(new NotificationData(
+          name: event.snapshot.value['TouristName'].toString(),
           uid: event.snapshot.key,
           channelID: event.snapshot.value['ChannelID'].toString(),
           timeStamp: event.snapshot.value['Timestamp'].toString(),
@@ -48,6 +51,7 @@ class NotificationScreenState extends State<NotificationScreen> {
         items.singleWhere((item) => item.uid == event.snapshot.key);
     setState(() {
       items[items.indexOf(oldItemVal)] = new NotificationData(
+          name: event.snapshot.value['TouristName'].toString(),
           uid: event.snapshot.key,
           channelID: event.snapshot.value['ChannelID'].toString(),
           timeStamp: event.snapshot.value['Timestamp'].toString(),
@@ -83,6 +87,36 @@ class NotificationScreenState extends State<NotificationScreen> {
     _onItemRemovedSub = ref.onChildRemoved.listen(_onItemRemoved);
     ref.keepSynced(true);
     return Scaffold(
+        drawer: Drawer(
+            child: Column(
+          children: <Widget>[
+            AppBar(
+              title: Text('Hello '),
+              automaticallyImplyLeading: false,
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(MdiIcons.account,color:Theme.of(context).primaryColor),
+              title: Text('Edit Profile',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Standard',
+                    color: Theme.of(context).primaryColor,
+                  )),
+              onTap: () {},
+            ),
+             ListTile(
+              leading: Icon(MdiIcons.information,color:Theme.of(context).primaryColor),
+              title: Text('About',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Standard',
+                    color: Theme.of(context).primaryColor,
+                  )),
+              onTap: () {},
+            ),
+          ],
+        )),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           iconTheme: IconThemeData(color: Color(0xff2893ff)),
@@ -121,35 +155,75 @@ class NotificationScreenState extends State<NotificationScreen> {
                   shrinkWrap: true,
                   itemCount: items.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      elevation: 3.0,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xfff3f5ff),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          height: 200,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: Text(items[index].uid),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: MaterialButton(
-                                    onPressed: submitting
-                                        ? null
-                                        : () async {
+                    return Dismissible(
+                      background: Container(color: Colors.red),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {
+                        db
+                            .reference()
+                            .child('Notifications')
+                            .child(_auth.userId)
+                            .child(items[index].uid)
+                            .remove();
+                        Fluttertoast.showToast(
+                            msg: "Deleted Call Notification!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIos: 2,
+                            backgroundColor: Color(0xff4564e5),
+                            textColor: Color(0xfff3f5ff),
+                            fontSize: 16.0);
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        elevation: 3.0,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xfff3f5ff),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text(items[index].name),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: MaterialButton(
+                                      onPressed: submitting
+                                          ? null
+                                          : () async {
+                                            String _hostName = '';
+                                            String _touristname = '';
+                                            FirebaseDatabase db =
+                                                FirebaseDatabase.instance;
+                                            await db
+                                                .reference()
+                                                .child('Users')
+                                                .child('Host')
+                                                .child(_auth.userId)
+                                                .child('Name')
+                                                .once()
+                                                .then((name) {
+                                              _hostName = name.value;
+                                            });
+                                            await db
+                                                .reference()
+                                                .child('Users')
+                                                .child('Tourist')
+                                                .child(items[index].uid)
+                                                .child('Name')
+                                                .once()
+                                                .then((name) {
+                                              _touristname = name.value;
+                                            });
                                             if (items[index].status == '1') {
-                                              print('1:' +
-                                                  items[index].channelID);
                                               await PermissionHandler()
                                                   .requestPermissions(
                                                 [
@@ -168,8 +242,6 @@ class NotificationScreenState extends State<NotificationScreen> {
                                                 ),
                                               );
                                             } else {
-                                              FirebaseDatabase db =
-                                                  FirebaseDatabase.instance;
                                               DatabaseReference dbRef = db
                                                   .reference()
                                                   .child('Notifications')
@@ -181,7 +253,9 @@ class NotificationScreenState extends State<NotificationScreen> {
                                                     .toString(),
                                                 'Status': 1,
                                                 'Timestamp':
-                                                    ServerValue.timestamp
+                                                    ServerValue.timestamp,
+                                                'HostName': _hostName,
+                                                'TouristName': _touristname,
                                               }).whenComplete(() async {
                                                 print('send notif');
                                                 await PermissionHandler()
@@ -211,7 +285,9 @@ class NotificationScreenState extends State<NotificationScreen> {
                                                           .toString(),
                                                   'Status': 0,
                                                   'Timestamp':
-                                                      ServerValue.timestamp
+                                                      ServerValue.timestamp,
+                                                  'HostName': _hostName,
+                                                  'TouristName': _touristname,
                                                 }).then((onValue) {
                                                   print('call end');
                                                 });
@@ -220,38 +296,43 @@ class NotificationScreenState extends State<NotificationScreen> {
                                               });
                                             }
                                           },
-                                    child: submitting
-                                        ? CircularProgressIndicator()
-                                        : SingleChildScrollView(
-                                            child: Row(
-                                              children: <Widget>[
-                                                Icon(MdiIcons.phone),
-                                                Text(
-                                                  items[index].status == '0'
-                                                      ? 'CALL AGAIN'
-                                                      : 'RECIEVE',
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontFamily: 'Standard',
-                                                    fontWeight: FontWeight.bold,
+                                      child: submitting
+                                          ? CircularProgressIndicator()
+                                          : SingleChildScrollView(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(MdiIcons.phone),
+                                                  Text(
+                                                    items[index].status == '0'
+                                                        ? 'CALL AGAIN'
+                                                        : 'RECIEVE',
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontFamily: 'Standard',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                    color: Theme.of(context).accentColor,
-                                    elevation: 0,
-                                    minWidth: 400,
-                                    height: 50,
-                                    textColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
+                                      color: Theme.of(context).accentColor,
+                                      elevation: 0,
+                                      minWidth: 400,
+                                      height: 50,
+                                      textColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )),
+                                ],
+                              ),
+                            )),
+                      ),
+                      key: ValueKey(index),
                     );
                   },
                 ),
