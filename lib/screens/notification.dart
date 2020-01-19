@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/provider/auth.dart';
+import 'package:hearthhome/screens/edit_profile.dart';
 import 'package:hearthhome/screens/home.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -96,17 +97,24 @@ class NotificationScreenState extends State<NotificationScreen> {
             ),
             Divider(),
             ListTile(
-              leading: Icon(MdiIcons.account,color:Theme.of(context).primaryColor),
+              leading:
+                  Icon(MdiIcons.account, color: Theme.of(context).primaryColor),
               title: Text('Edit Profile',
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: 'Standard',
                     color: Theme.of(context).primaryColor,
                   )),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProfileHostScreen()));
+              },
             ),
-             ListTile(
-              leading: Icon(MdiIcons.information,color:Theme.of(context).primaryColor),
+            ListTile(
+              leading: Icon(MdiIcons.information,
+                  color: Theme.of(context).primaryColor),
               title: Text('About',
                   style: TextStyle(
                     fontSize: 20,
@@ -125,11 +133,16 @@ class NotificationScreenState extends State<NotificationScreen> {
           title: new Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              CircularImageView(
-                w: 50,
-                h: 50,
-                imageLink: 'assets/icon/icon_round.png',
-                imgSrc: ImageSourceENUM.Asset,
+              GestureDetector(
+                onTap: () {
+                 
+                },
+                child: CircularImageView(
+                  w: 50,
+                  h: 50,
+                  imageLink: 'assets/icon/icon_round.png',
+                  imgSrc: ImageSourceENUM.Asset,
+                ),
               ),
               Wrap(children: <Widget>[
                 Padding(
@@ -199,65 +212,31 @@ class NotificationScreenState extends State<NotificationScreen> {
                                       onPressed: submitting
                                           ? null
                                           : () async {
-                                            String _hostName = '';
-                                            String _touristname = '';
-                                            FirebaseDatabase db =
-                                                FirebaseDatabase.instance;
-                                            await db
-                                                .reference()
-                                                .child('Users')
-                                                .child('Host')
-                                                .child(_auth.userId)
-                                                .child('Name')
-                                                .once()
-                                                .then((name) {
-                                              _hostName = name.value;
-                                            });
-                                            await db
-                                                .reference()
-                                                .child('Users')
-                                                .child('Tourist')
-                                                .child(items[index].uid)
-                                                .child('Name')
-                                                .once()
-                                                .then((name) {
-                                              _touristname = name.value;
-                                            });
-                                            if (items[index].status == '1') {
-                                              await PermissionHandler()
-                                                  .requestPermissions(
-                                                [
-                                                  PermissionGroup.camera,
-                                                  PermissionGroup.microphone
-                                                ],
-                                              );
-                                              await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CallPage(
-                                                    channelName:
-                                                        items[index].channelID,
-                                                  ),
-                                                ),
-                                              );
-                                            } else {
-                                              DatabaseReference dbRef = db
+                                              String _hostName = '';
+                                              String _touristname = '';
+                                              FirebaseDatabase db =
+                                                  FirebaseDatabase.instance;
+                                              await db
                                                   .reference()
-                                                  .child('Notifications')
+                                                  .child('Users')
+                                                  .child('Host')
                                                   .child(_auth.userId)
-                                                  .child(items[index].uid);
-                                              dbRef.set({
-                                                'ChannelID': (items[index].uid +
-                                                        _auth.userId)
-                                                    .toString(),
-                                                'Status': 1,
-                                                'Timestamp':
-                                                    ServerValue.timestamp,
-                                                'HostName': _hostName,
-                                                'TouristName': _touristname,
-                                              }).whenComplete(() async {
-                                                print('send notif');
+                                                  .child('Name')
+                                                  .once()
+                                                  .then((name) {
+                                                _hostName = name.value;
+                                              });
+                                              await db
+                                                  .reference()
+                                                  .child('Users')
+                                                  .child('Tourist')
+                                                  .child(items[index].uid)
+                                                  .child('Name')
+                                                  .once()
+                                                  .then((name) {
+                                                _touristname = name.value;
+                                              });
+                                              if (items[index].status == '1') {
                                                 await PermissionHandler()
                                                     .requestPermissions(
                                                   [
@@ -265,37 +244,73 @@ class NotificationScreenState extends State<NotificationScreen> {
                                                     PermissionGroup.microphone
                                                   ],
                                                 );
-                                                // push video page with given channel name
                                                 await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         CallPage(
-                                                      channelName:
-                                                          (items[index].uid +
-                                                                  _auth.userId)
-                                                              .toString(),
+                                                      channelName: items[index]
+                                                          .channelID,
                                                     ),
                                                   ),
                                                 );
+                                              } else {
+                                                DatabaseReference dbRef = db
+                                                    .reference()
+                                                    .child('Notifications')
+                                                    .child(_auth.userId)
+                                                    .child(items[index].uid);
                                                 dbRef.set({
                                                   'ChannelID':
                                                       (items[index].uid +
                                                               _auth.userId)
                                                           .toString(),
-                                                  'Status': 0,
+                                                  'Status': 1,
                                                   'Timestamp':
                                                       ServerValue.timestamp,
                                                   'HostName': _hostName,
                                                   'TouristName': _touristname,
-                                                }).then((onValue) {
-                                                  print('call end');
+                                                }).whenComplete(() async {
+                                                  print('send notif');
+                                                  await PermissionHandler()
+                                                      .requestPermissions(
+                                                    [
+                                                      PermissionGroup.camera,
+                                                      PermissionGroup.microphone
+                                                    ],
+                                                  );
+                                                  // push video page with given channel name
+                                                  await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CallPage(
+                                                        channelName:
+                                                            (items[index].uid +
+                                                                    _auth
+                                                                        .userId)
+                                                                .toString(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                  dbRef.set({
+                                                    'ChannelID':
+                                                        (items[index].uid +
+                                                                _auth.userId)
+                                                            .toString(),
+                                                    'Status': 0,
+                                                    'Timestamp':
+                                                        ServerValue.timestamp,
+                                                    'HostName': _hostName,
+                                                    'TouristName': _touristname,
+                                                  }).then((onValue) {
+                                                    print('call end');
+                                                  });
+                                                }).catchError((onError) {
+                                                  print(onError);
                                                 });
-                                              }).catchError((onError) {
-                                                print(onError);
-                                              });
-                                            }
-                                          },
+                                              }
+                                            },
                                       child: submitting
                                           ? CircularProgressIndicator()
                                           : SingleChildScrollView(

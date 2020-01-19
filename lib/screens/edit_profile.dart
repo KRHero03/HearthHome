@@ -18,15 +18,15 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:provider/provider.dart';
 
-class ProviderInfo extends StatefulWidget {
+class EditProfileHostScreen extends StatefulWidget {
   static const routeName = 'providerInfo';
   @override
   State<StatefulWidget> createState() {
-    return ProviderInfoState();
+    return EditProfileHostState();
   }
 }
 
-class ProviderInfoState extends State<ProviderInfo> {
+class EditProfileHostState extends State<EditProfileHostScreen> {
   FirebaseDatabase db = FirebaseDatabase.instance;
   
   @override
@@ -247,7 +247,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                 Padding(
                   padding: EdgeInsets.only(left: 5),
                   child: Text(
-                    'HearthHome - Set Up',
+                    'HearthHome - Edit Profile',
                     style: TextStyle(
                       fontSize: 25,
                       fontFamily: 'Standard',
