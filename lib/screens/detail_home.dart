@@ -25,12 +25,39 @@ class HomeDetailScreen extends StatefulWidget {
 }
 
 class HomeDetailsScreenState extends State<HomeDetailScreen> {
+  
   var _isloaded = false;
   final HomeData data;
   bool isLoadingMap = false;
   bool confirming = false;
   HomeDetailsScreenState({this.data});
   static String routeName = '/product-detail';
+
+  _confirmBooking(String hostID, String userID) async {
+  await showDialog(
+      context: context,
+      builder: (ctx) => CustomConfirmDialog(
+            title: 'HearthHome Confirm Booking',
+            message:
+                'Are you sure you want to proceed with the booking?\nNote that your details will be shared with the Host.\nLikewise, if the Host accepts, you will have their details.',
+          )).then((onValue) {
+    setState(() {
+      confirming = true;
+    });
+    FirebaseDatabase db = FirebaseDatabase.instance;
+    DatabaseReference dbRef = db.reference().child('Requests').child(hostID);
+    dbRef.set({
+      userID: 1,
+    }).whenComplete(() async {
+      print('send notif');
+
+      setState(() {
+        confirming = false;
+      });
+    });
+  });
+}
+
   @override
   Widget build(BuildContext context) {
     var _auth = Provider.of<Auth>(context);
@@ -59,14 +86,7 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
       }
     }
 
-    _confirmBooking(){
-      showDialog(
-        context: context,
-        builder: (ctx) => CustomConfirmDialog(
-              title: 'HearthHome Confirm Booking',
-              message: 'Are you sure you want to proceed with the booking?\nNote that your details will be shared with the Host.\nLikewise, if the Host accepts, you will have their details.',
-            ));
-    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -418,8 +438,9 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
                 child: confirming
                     ? CircularProgressIndicator()
                     : MaterialButton(
-                        onPressed:confirming?null:_confirmBooking,                         
-                         
+                        onPressed:(){
+                          _confirmBooking(data.key,_auth.userId);                         
+                        },
                         child: SingleChildScrollView(
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
