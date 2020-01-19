@@ -8,6 +8,7 @@ import 'package:hearthhome/agora/src/pages/call.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/edit_profile.dart';
+import 'package:hearthhome/screens/guest_screen.dart';
 import 'package:hearthhome/screens/home.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -60,13 +61,6 @@ class NotificationScreenState extends State<NotificationScreen> {
     });
   }
 
-  void _onItemRemoved(Event event) {
-    var oldItemVal =
-        items.singleWhere((item) => item.uid == event.snapshot.key);
-    setState(() {
-      items.removeAt(items.indexOf(oldItemVal));
-    });
-  }
 
   void initState() {
     db.setPersistenceEnabled(true);
@@ -85,7 +79,6 @@ class NotificationScreenState extends State<NotificationScreen> {
 
     _onItemAddedSub = ref.onChildAdded.listen(_onItemAdded);
     _onItemChangedSub = ref.onChildChanged.listen(_onItemChanged);
-    _onItemRemovedSub = ref.onChildRemoved.listen(_onItemRemoved);
     ref.keepSynced(true);
     return Scaffold(
         drawer: Drawer(
@@ -111,6 +104,20 @@ class NotificationScreenState extends State<NotificationScreen> {
                     MaterialPageRoute(
                         builder: (context) => EditProfileHostScreen()));
               },
+            ),
+             ListTile(
+              leading: Icon(MdiIcons.accountGroup,
+                  color: Theme.of(context).primaryColor),
+              title: Text('Guest',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Standard',
+                    color: Theme.of(context).primaryColor,
+                  )),
+              onTap: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GuestScreen()));},
             ),
             ListTile(
               leading: Icon(MdiIcons.information,
@@ -172,6 +179,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                       background: Container(color: Colors.red),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) {
+                        items.removeAt(index);
                         db
                             .reference()
                             .child('Notifications')
@@ -183,7 +191,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIos: 2,
-                            backgroundColor: Color(0xff4564e5),
+                            backgroundColor: Theme.of(context).primaryColor,
                             textColor: Color(0xfff3f5ff),
                             fontSize: 16.0);
                       },

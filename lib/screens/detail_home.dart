@@ -28,6 +28,7 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
   var _isloaded = false;
   final HomeData data;
   bool isLoadingMap = false;
+  bool confirming = false;
   HomeDetailsScreenState({this.data});
   static String routeName = '/product-detail';
   @override
@@ -414,10 +415,10 @@ class HomeDetailsScreenState extends State<HomeDetailScreen> {
               child: Padding(
                 padding:
                     EdgeInsets.only(top: 20, bottom: 10, left: 15, right: 15),
-                child: _isloaded
+                child: confirming
                     ? CircularProgressIndicator()
                     : MaterialButton(
-                        onPressed:_confirmBooking,                         
+                        onPressed:confirming?null:_confirmBooking,                         
                          
                         child: SingleChildScrollView(
                             child: Row(

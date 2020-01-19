@@ -8,7 +8,7 @@ import 'package:flutter_country_picker/flutter_country_picker.dart';
 import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/models/keys.dart';
 import 'package:hearthhome/provider/auth.dart';
-import 'package:hearthhome/screens/home.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hearthhome/screens/notification.dart';
 import 'package:hearthhome/services/name_validator.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
