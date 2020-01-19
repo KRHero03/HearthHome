@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hearthhome/screens/auth_screen.dart';
+import 'package:hearthhome/screens/split_screen.dart';
 import 'package:provider/provider.dart';
 import './screens/splash_screen.dart';
 import './provider/auth.dart';
@@ -80,7 +81,7 @@ class SplashState extends State<Splash> {
                     fontFamily: 'Standard',
                   ),
                   home: auth.isAuth
-                      ? Home()
+                      ? SplitScreen()
                       : FutureBuilder(
                           future: auth.tryAutoLogin(),
                           builder: (ctx, authResult) =>

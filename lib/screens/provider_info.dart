@@ -9,6 +9,7 @@ import 'package:hearthhome/models/enum.dart';
 import 'package:hearthhome/models/keys.dart';
 import 'package:hearthhome/provider/auth.dart';
 import 'package:hearthhome/screens/home.dart';
+import 'package:hearthhome/screens/notification.dart';
 import 'package:hearthhome/services/name_validator.dart';
 import 'package:hearthhome/widgets/alert/alert_dialog.dart';
 import 'package:hearthhome/widgets/circular_image_view.dart';
@@ -112,8 +113,8 @@ class ProviderInfoState extends State<ProviderInfo> {
           govIDFile != null &&
           houseImageFile.length != 0 &&
           pincode.length == 6 &&
-          latitude != null &&
-          longitude != null &&
+         // latitude != null &&
+          //longitude != null &&
           adultFemale != null &&
           adultMale != null &&
           childrenMale != null &&
@@ -173,7 +174,7 @@ class ProviderInfoState extends State<ProviderInfo> {
                 'GovIDURL': govIDURL
               }).then((onValue) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Home()));
+                    context, MaterialPageRoute(builder: (context) => NotificationScreen()));
                 setState(() {
                   submitting = false;
                 });
