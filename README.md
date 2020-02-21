@@ -1,16 +1,5 @@
-# hearthhome
+# HearthHome
 
-A new Flutter project.
+Well, it's not always that you find yourself a good Hotel in your trips. You may experience trouble and disappointment in such scenarios even after paying a lump sum of money. Instead of the cumbersome and money-laundering process, we bring you HearthHome, a platform independent application that allows you to connect with the localites, the people who are the spirit of the tourist site. Why don't stay at one of their homes and experience a heart-warming welcome that includes but is not limited to local cultural heritage, local cuisine, friendly 'family wali' feeling as we Indians call it and above all, an experience being cherished life long?
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Technically, HearthHome is made using Flutter SDK that provides itself with a platform independent non native code. It allows you to run the App both on Android and IOS. Being still in the development stage, we have poured our heart out in the application in the 30 hours that we used to prepare it. Do note that it also uses Agora SDK for implementing Video Chat.
